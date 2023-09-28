@@ -2,14 +2,14 @@
 <div class="sidebar-menu">
     <div class="sidebar-header">
         <div class="logo">
-            <a href="index.html"><img src="assets/images/icon/logo.png" alt="logo"></a>
+            <a href="index.html"><img src="{{ asset('assets/images/icon/logo.png') }}" alt="logo"></a>
         </div>
     </div>
     <div class="main-menu">
         <div class="menu-inner">
             <nav>
                 <ul class="metismenu" id="menu">
-                    <li><a href="maps.html"><i class="ti-dashboard"></i> <span>dashboard</span></a></li>
+                    <li><a href="dashboard.html"><i class="ti-dashboard"></i> <span>dashboard</span></a></li>
                     <li>
                         <a href="javascript:void(0)" aria-expanded="true"><i class="fa fa-align-left"></i> <span>Multi
                                 level menu</span></a>
@@ -26,6 +26,13 @@
                             <li><a href="#">Item level (1)</a></li>
                         </ul>
                     </li>
+                            @can('delete_user')
+                    <li><a href="{{ route('roles.index') }}"><i class="ti-receipt"></i> <span>Roles</span></a></li>
+
+                        @endcan
+                        <li><a href="{{route('users.index')}}"><i class="ti-pie-chart"></i> <span>Users</span></a></li>
+                        <li><a href="{{route('products.index')}}"><i class="ti-pie-chart"></i> <span>Products</span></a></li>
+                        <li><a href="{{route('catagories.index')}}"><i class="ti-receipt"></i><span>Catagories</span></a></li>
                 </ul>
             </nav>
         </div>

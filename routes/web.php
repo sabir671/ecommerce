@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CalenderController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\locationController;
 use App\Http\Controllers\PolygonController;
@@ -58,14 +59,19 @@ Route::resource('products', ProductController::class);
 
 Route::resource('catagories', CategoryController::class);
 
-
+// FOR otp
 Route::match(['get', 'post'], '/sendsms', [SmsController::class, 'sendsms'])->name('sendsms');
 Route::get('sendotp', [OtpController::class, 'otp'])->name('sendotp');
 Route::post('/sendotp', [OtpController::class, 'sendotp'])->name('sendOtp');
 
-
+// for google map
 Route::get('/googleMap', [GoogleController::class, 'googleMap']);
 Route::post('/save-location', [locationController::class, 'store'])->name('save.location');
 Route::get('/view-locations', [locationController::class, 'viewLocations'])->name('view.locations');
-Route::post('/save-polygon', [PolygonController::class,'savePolygon'])->name('save.polygon');
-Route::get('/save-polygon', [PolygonController::class,'savePoly']);
+// Route::post('/save-polygon', [PolygonController::class,'savePolygon'])->name('save.polygon');
+// Route::get('/save-polygon', [PolygonController::class,'savePoly']);
+
+
+//  FOR calender
+Route::get('/calender-event',[CalenderController::class,'index']);
+Route::post('calender-crude-ajax',[CalenderController::class,'calendarEvents']);

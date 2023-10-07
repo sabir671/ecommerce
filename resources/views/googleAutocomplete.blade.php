@@ -238,8 +238,7 @@
             console.log(drawnShapes);
 
             // Send the captured shapes and coordinates to the server (PHP)
-            fetch('{{ route('
-                    save.location ') }}', {
+            fetch('{{ route('save.location')}}', {
                         method: 'POST'
                         , headers: {
                             'Content-Type': 'application/json'

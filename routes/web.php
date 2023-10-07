@@ -68,8 +68,8 @@ Route::post('/sendotp', [OtpController::class, 'sendotp'])->name('sendOtp');
 Route::get('/googleMap', [GoogleController::class, 'googleMap']);
 Route::post('/save-location', [locationController::class, 'store'])->name('save.location');
 Route::get('/view-locations', [locationController::class, 'viewLocations'])->name('view.locations');
-// Route::post('/save-polygon', [PolygonController::class,'savePolygon'])->name('save.polygon');
-// Route::get('/save-polygon', [PolygonController::class,'savePoly']);
+Route::post('/save-polygon', [PolygonController::class,'savePolygon'])->name('save.polygon');
+Route::get('/save-polygon', [PolygonController::class,'savePoly']);
 
 
 //  FOR calender

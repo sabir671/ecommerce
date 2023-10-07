@@ -24,29 +24,29 @@
     </style>
 </head>
 <body>
-                {{-- modal to show details of event  --}}
-                <!-- Event Details Modal -->
-<div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eventDetailsModalLabel">Event Details</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="eventDetailsTitle"></div>
-                <div id="eventDetailsDescription"></div>
-                <div id="eventDetailsStartDate"></div>
-                <div id="eventDetailsEndDate"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    {{-- modal to show details of event  --}}
+    <!-- Event Details Modal -->
+    <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventDetailsModalLabel">Event Details</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="eventDetailsTitle"></div>
+                    <div id="eventDetailsDescription"></div>
+                    <div id="eventDetailsStartDate"></div>
+                    <div id="eventDetailsEndDate"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
 
@@ -114,148 +114,138 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
 
     <script>
-     $(document).ready(function() {
-    var SITEURL = window.location.origin;
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    var calendar = $('#full_calendar_events').fullCalendar({
-        editable: true,
-        events: SITEURL + "/calender-event",
-        displayEventTime: true,
-        viewRender: function(view, element) {
-            var today = moment().format('YYYY-MM-DD');
-            $('.fc-day').removeClass('current-day');
-            $('.fc-day[data-date="' + today + '"]').addClass('current-day');
-        },
-        selectable: true,
-        selectHelper: true,
-        select: function(event_start, event_end, allDay) {
-            var event_name = prompt('Event Name:');
-            var event_color = $('#eventColor').val();
-
-            if (event_name) {
-                var event_start = $.fullCalendar.formatDate(event_start, "Y-MM-DD HH:mm:ss");
-                var event_end = $.fullCalendar.formatDate(event_end, "Y-MM-DD HH:mm:ss");
-
-                $.ajax({
-                    url: SITEURL + "/calender-crude-ajax",
-                    data: {
-                        event_name: event_name,
-                        event_start: event_start,
-                        event_end: event_end,
-                        event_color: event_color,
-                        type: 'create'
-                    },
-                    type: "POST",
-                    success: function(data) {
-                        console.log("Data sent to server:", data); // Log the data sent to the server
-                        displayMessage("Event created.");
-                        calendar.fullCalendar('refetchEvents');
-                        calendar.fullCalendar('unselect');
-                    }
-                });
-            }
-        },
-        eventDrop: function(event, delta) {
-            var event_start = $.fullCalendar.formatDate(event.start, "Y-MM-DD");
-            var event_end = $.fullCalendar.formatDate(event.end, "Y-MM-DD");
-            $.ajax({
-                url: SITEURL + '/calender-crude-ajax',
-                data: {
-                    title: event.event_name,
-                    start: event_start,
-                    end: event_end,
-                    id: event.id,
-                    type: 'edit'
-                },
-                type: "POST",
-                success: function(response) {
-                    displayMessage("Event updated");
+        $(document).ready(function() {
+            var SITEURL = window.location.origin;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-        },
-        eventClick: function(event) {
-            $('#eventDetailsTitle').text('Title: ' + event.title);
-            // $('#eventDetailsDescription').text('Description: ' + event.description);
-            // $('#eventDetailsStartDate').text('Start Date: ' + moment(event.start).format('YYYY-MM-DD'));
-            // $('#eventDetailsEndDate').text('End Date: ' + moment(event.end).format('YYYY-MM-DD'));
 
-            $('#eventDetailsModal').modal('show');
-        },
-        eventRender: function(event, element) {
-            var start = moment(event.start);
-            var end = moment(event.end);
-
-            var duration = end.diff(start, 'days');
-
-            element.css('background-color', event.color);
-            element.addClass('custom-color-event');
-
-            if (duration > 0) {
-                for (var i = 1; i <= duration; i++) {
-                    var date = start.clone().add(i, 'days').format('YYYY-MM-DD');
-                    $('.fc-day[data-date="' + date + '"]').css('background-color', event.color);
+            var calendar = $('#full_calendar_events').fullCalendar({
+                editable: true
+                , events: SITEURL + "/calender-event"
+                , displayEventTime: true
+                , viewRender: function(view, element) {
+                    var today = moment().format('YYYY-MM-DD');
+                    $('.fc-day').removeClass('current-day');
+                    $('.fc-day[data-date="' + today + '"]').addClass('current-day');
                 }
+                , selectable: true
+                , selectHelper: true
+                , select: function(event_start, event_end, allDay) {
+                    var event_name = prompt('Event Name:');
+                    var event_color = $('#eventColor').val();
+
+                    if (event_name) {
+                        var event_start = $.fullCalendar.formatDate(event_start, "Y-MM-DD HH:mm:ss");
+                        var event_end = $.fullCalendar.formatDate(event_end, "Y-MM-DD HH:mm:ss");
+
+                        $.ajax({
+                            url: SITEURL + "/calender-crude-ajax"
+                            , data: {
+                                event_name: event_name
+                                , event_start: event_start
+                                , event_end: event_end
+                                , event_color: event_color
+                                , type: 'create'
+                            }
+                            , type: "POST"
+                            , success: function(data) {
+                                console.log("Data sent to server:", data); // Log the data sent to the server
+                                displayMessage("Event created.");
+                                calendar.fullCalendar('refetchEvents');
+                                calendar.fullCalendar('unselect');
+                            }
+                        });
+                    }
+                }
+                , eventDrop: function(event, delta) {
+                    var event_start = $.fullCalendar.formatDate(event.start, "Y-MM-DD");
+                    var event_end = $.fullCalendar.formatDate(event.end, "Y-MM-DD");
+                    $.ajax({
+                        url: SITEURL + '/calender-crude-ajax'
+                        , data: {
+                            title: event.event_name
+                            , start: event_start
+                            , end: event_end
+                            , id: event.id
+                            , type: 'edit'
+                        }
+                        , type: "POST"
+                        , success: function(response) {
+                            displayMessage("Event updated");
+                        }
+                    });
+                }
+                , eventClick: function(event) {
+                    $('#eventDetailsTitle').text('Title: ' + event.title);
+                    // $('#eventDetailsDescription').text('Description: ' + event.description);
+                    // $('#eventDetailsStartDate').text('Start Date: ' + moment(event.start).format('YYYY-MM-DD'));
+                    // $('#eventDetailsEndDate').text('End Date: ' + moment(event.end).format('YYYY-MM-DD'));
+
+                    $('#eventDetailsModal').modal('show');
+                }
+                , eventRender: function(event, element) {
+                    var start = moment(event.start);
+                    var end = moment(event.end);
+                    var duration = end.diff(start, 'days');
+                    var eventColor = event.color;
+                    element.addClass('custom-color-event');
+                    if (duration > 0) {
+                        for (var i = 0; i <= duration; i++) {
+                            var date = start.clone().add(i, 'days').format('YYYY-MM-DD');
+                            $('.fc-day[data-date="' + date + '"]').find('.fc-day-top').css('background-color', eventColor);
+                        }
+                    }
+                }
+            });
+
+
+            function displayMessage(message) {
+                toastr.success(message, 'Event');
             }
-        }
-    });
 
+            flatpickr("#date", {
+                mode: "range"
+                , dateFormat: "Y-m-d"
+            });
 
-    function displayMessage(message) {
-        toastr.success(message, 'Event');
-    }
+            // Modal submission
+            $('#submitEvent').on('click', function() {
+                var title = $('#recipient-name').val();
+                var description = $('#message-text').val();
+                var startDate = $('#start-date').val();
+                var endDate = $('#end-date').val();
+                var color = $('#eventColor').val();
 
-    flatpickr("#date", {
-        mode: "range",
-        dateFormat: "Y-m-d"
-    });
-
-    // Modal submission
-    $('#submitEvent').on('click', function() {
-        var title = $('#recipient-name').val();
-        var description = $('#message-text').val();
-        var startDate = $('#start-date').val();
-        var endDate = $('#end-date').val();
-        var color = $('#eventColor').val();
-
-        $.ajax({
-            url: SITEURL + "/calender-crude-ajax",
-            type: "POST",
-            data: {
-                title: title,
-                description: description,
-                start_date: startDate,
-                end_date: endDate,
-                color: color,
-                type: 'create'
-            },
-            success: function(data) {
-                displayMessage("Event created.");
-
-                // Close the modal after successful submission
-                $('#exampleModal').modal('hide');
-
-                // Optionally, you can clear the form inputs here
-                $('#recipient-name').val('');
-                $('#message-text').val('');
-                $('#start-date').val('');
-                $('#end-date').val('');
-                $('#eventColor').val('');
-
-                // Refresh the calendar to fetch and display the latest events
-                calendar.fullCalendar('refetchEvents');
-            },
-            error: function(error) {
-                console.error('Error:', error);
-            }
+                $.ajax({
+                    url: SITEURL + "/calender-crude-ajax"
+                    , type: "POST"
+                    , data: {
+                        title: title
+                        , description: description
+                        , start_date: startDate
+                        , end_date: endDate
+                        , color: color
+                        , type: 'create'
+                    }
+                    , success: function(data) {
+                        displayMessage("Event created.");
+                        $('#exampleModal').modal('hide');
+                        $('#recipient-name').val('');
+                        $('#message-text').val('');
+                        $('#start-date').val('');
+                        $('#end-date').val('');
+                        $('#eventColor').val('');
+                        calendar.fullCalendar('refetchEvents');
+                    }
+                    , error: function(error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
         });
-    });
-});
-
 
     </script>
 </body>
